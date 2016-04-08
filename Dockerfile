@@ -1,5 +1,5 @@
-FROM node:4.2.6
-MAINTAINER Fraser Xu <xvfeng123@gmail.com>
+FROM node:argon
+MAINTAINER Kip Parker <kip@kipparker.co.uk>
 
 RUN apt-get update
 
@@ -27,14 +27,8 @@ RUN apt-get install -y \
   gcc-multilib \
   g++-multilib
 
-# Include the local file to working directory
-# I keep node_modules here because it's faster than install inside the container.
-ADD . /app
-
+ADD package.json /app/package.json
 WORKDIR /app
-
-# Need to rebuild because modules are installed from local
-RUN npm install && npm rebuild
-
+RUN npm install
 # "xvfb-run -a [mycommand]" so xvfb uses another display if 99 is in use.
 CMD Xvfb -ac -screen scrn 1280x2000x24 :9.0 & export DISPLAY=:9.0 && npm test
